@@ -1,9 +1,9 @@
-package osmodel 
+package osmodel
 
 import (
 	"fmt"
-  "gorm.io/gorm"
-  "log"
+	"gorm.io/gorm"
+	"log"
 )
 
 type Ipaddress struct {
@@ -47,19 +47,19 @@ func (iface *Interface) Genline() string {
 }
 
 func MigrateDB(db *gorm.DB) {
-  err := db.AutoMigrate(&Ipaddress{})
-  if err != nil {
-    log.Fatal(err)
-  }
-  log.Println("Ipaddress migrated")
-  err = db.AutoMigrate(&Keyval{})
-  if err != nil {
-    log.Fatal(err)
-  }
-  log.Println("Keyval migrated")
-  err = db.AutoMigrate(&Interface{})
-  if err != nil {
-    log.Fatal(err)
-  }
-  log.Println("Interface migrated")
+	err := db.AutoMigrate(&Ipaddress{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Ipaddress migrated")
+	err = db.AutoMigrate(&Keyval{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Keyval migrated")
+	err = db.AutoMigrate(&Interface{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Interface migrated")
 }

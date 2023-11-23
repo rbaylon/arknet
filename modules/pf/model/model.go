@@ -2,8 +2,8 @@ package pfmodel
 
 import (
 	"fmt"
-  "gorm.io/gorm"
-  "log"
+	"gorm.io/gorm"
+	"log"
 )
 
 type Pfrulebasic struct {
@@ -16,16 +16,16 @@ type Pfrulebasic struct {
 	Source      string `json:"source"`
 	Destination string `json:"destination"`
 	Dstport     string `json:"dstport"`
-  Custom        string `json:"custom"`
+	Custom      string `json:"custom"`
 }
 
 func (pfrb *Pfrulebasic) Genline() string {
-  if c := string(pfrb.Custom[0]); c != "#" {
-    return fmt.Sprintf("%s %s on %s %s proto % from %s to % port %s %s",
-      pfrb.Action, pfrb.Direction, pfrb.Interface, 
-      pfrb.Addrfamily, pfrb.Protocol, pfrb.Source, pfrb.Destination, pfrb.Dstport, pfrb.Custom)
-  }
-	return fmt.Sprintf("%s %s on %s %s proto % from %s to % port %s",
+	if c := string(pfrb.Custom[0]); c != "#" {
+		return fmt.Sprintf("%s %s on %s %s proto %s from %s to %s port %s %s",
+			pfrb.Action, pfrb.Direction, pfrb.Interface,
+			pfrb.Addrfamily, pfrb.Protocol, pfrb.Source, pfrb.Destination, pfrb.Dstport, pfrb.Custom)
+	}
+	return fmt.Sprintf("%s %s on %s %s proto %s from %s to %s port %s",
 		pfrb.Action, pfrb.Direction, pfrb.Interface, pfrb.Addrfamily, pfrb.Protocol, pfrb.Source, pfrb.Destination, pfrb.Dstport)
 }
 
@@ -46,14 +46,14 @@ func (pfq *Pfqueue) Genline() string {
 }
 
 func MigrateDB(db *gorm.DB) {
-  err := db.AutoMigrate(&Pfrulebasic{})
-  if err != nil {
-    log.Fatal(err)
-  }
-  log.Println("Pfrulebasic migrated")
-  err = db.AutoMigrate(&Pfqueue{})
-  if err != nil {
-    log.Fatal(err)
-  }
-  log.Println("Pfqueue migrated")
+	err := db.AutoMigrate(&Pfrulebasic{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Pfrulebasic migrated")
+	err = db.AutoMigrate(&Pfqueue{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Pfqueue migrated")
 }
