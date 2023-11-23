@@ -49,7 +49,7 @@ func GetRuleByID(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 		res, err := pfcontroller.GetPfrulebasicByID(db, id)
-		if err != nil {
+		if err == nil {
 			c.IndentedJSON(http.StatusOK, res)
 			return
 		}
