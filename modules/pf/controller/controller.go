@@ -83,3 +83,12 @@ func DeletePfqueue(db *gorm.DB, pfq *pfmodel.Pfqueue) error {
 	}
 	return nil
 }
+
+func GetPfqueues(db *gorm.DB) ([]pfmodel.Pfqueue, error) {
+	var pfqs []pfmodel.Pfqueue
+	result := db.Find(&pfqs)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return pfqs, nil
+}
