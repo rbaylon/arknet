@@ -4,6 +4,7 @@ import (
 	"arknet/database"
 	"arknet/modules/common/model"
 	"arknet/modules/os/model"
+  "arknet/modules/os/view"
 	"arknet/modules/pf/model"
 	"arknet/modules/pf/view"
 	"github.com/gin-gonic/gin"
@@ -27,5 +28,6 @@ func main() {
 	osmodel.MigrateDB(db)
 	r := gin.Default()
 	pfview.Setroutes(r, db)
+  osview.Setroutes(r, db)
 	r.Run(gin_ip + ":" + gin_port)
 }

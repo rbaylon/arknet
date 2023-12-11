@@ -41,8 +41,14 @@ type Interface struct {
 
 func (iface *Interface) Genline() string {
 	if c := string(iface.Custom[0]); c != "#" {
+    if nm := string(iface.Netmask[0]); nm == "/" {
+      return fmt.Sprintf("inet %s%s\n%s", iface.Ip, iface.Netmask, iface.Custom)
+    }
 		return fmt.Sprintf("inet %s %s\n%s", iface.Ip, iface.Netmask, iface.Custom)
 	}
+  if nm := string(iface.Netmask[0]); nm == "/" {
+    return fmt.Sprintf("%s%s", iface.Ip, iface.Netmask)
+  }
 	return fmt.Sprintf("inet %s %s", iface.Ip, iface.Netmask)
 }
 

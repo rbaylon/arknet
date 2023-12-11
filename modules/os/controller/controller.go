@@ -1,11 +1,12 @@
 package oscontroller
 
 import (
-	"arknet/modules/os/model"
+  "arknet/modules/os/model"
+  "gorm.io/gorm"
 )
 
 // IP address
-func createIpaddress(db *gorm.DB, ipa *osmodel.Ipaddress) error {
+func CreateIpaddress(db *gorm.DB, ipa *osmodel.Ipaddress) error {
 	result := db.Create(ipa)
 	if result.Error != nil {
 		return result.Error
@@ -13,7 +14,7 @@ func createIpaddress(db *gorm.DB, ipa *osmodel.Ipaddress) error {
 	return nil
 }
 
-func getIpaddressByID(db *gorm.DB, ipaID uint) (*osmodel.Ipaddress, error) {
+func GetIpaddressByID(db *gorm.DB, ipaID int) (*osmodel.Ipaddress, error) {
 	var ipa osmodel.Ipaddress
 	result := db.First(&ipa, ipaID)
 	if result.Error != nil {
@@ -22,7 +23,7 @@ func getIpaddressByID(db *gorm.DB, ipaID uint) (*osmodel.Ipaddress, error) {
 	return &ipa, nil
 }
 
-func updateIpaddress(db *gorm.DB, ipa *osmodel.Ipaddress) error {
+func UpdateIpaddress(db *gorm.DB, ipa *osmodel.Ipaddress) error {
 	result := db.Save(ipa)
 	if result.Error != nil {
 		return result.Error
@@ -30,7 +31,7 @@ func updateIpaddress(db *gorm.DB, ipa *osmodel.Ipaddress) error {
 	return nil
 }
 
-func deleteIpaddress(db *gorm.DB, ipa *osmodel.Ipaddress) error {
+func DeleteIpaddress(db *gorm.DB, ipa *osmodel.Ipaddress) error {
 	result := db.Delete(ipa)
 	if result.Error != nil {
 		return result.Error
@@ -38,8 +39,17 @@ func deleteIpaddress(db *gorm.DB, ipa *osmodel.Ipaddress) error {
 	return nil
 }
 
+func GetIPaddresses(db *gorm.DB) ([]osmodel.Ipaddress, error) {
+  var addrs []osmodel.Ipaddress
+  result := db.Find(&addrs)
+  if result.Error != nil {
+    return nil, result.Error
+  }
+  return addrs, nil
+}
+
 // Key value pairs
-func createKeyval(db *gorm.DB, kv *osmodel.Keyval) error {
+func CreateKeyval(db *gorm.DB, kv *osmodel.Keyval) error {
 	result := db.Create(kv)
 	if result.Error != nil {
 		return result.Error
@@ -47,7 +57,7 @@ func createKeyval(db *gorm.DB, kv *osmodel.Keyval) error {
 	return nil
 }
 
-func getKeyvalByID(db *gorm.DB, kvID uint) (*osmodel.Keyval, error) {
+func GetKeyvalByID(db *gorm.DB, kvID int) (*osmodel.Keyval, error) {
 	var kv osmodel.Keyval
 	result := db.First(&kv, kvID)
 	if result.Error != nil {
@@ -56,7 +66,7 @@ func getKeyvalByID(db *gorm.DB, kvID uint) (*osmodel.Keyval, error) {
 	return &kv, nil
 }
 
-func updateKeyval(db *gorm.DB, kv *osmodel.Keyval) error {
+func UpdateKeyval(db *gorm.DB, kv *osmodel.Keyval) error {
 	result := db.Save(kv)
 	if result.Error != nil {
 		return result.Error
@@ -64,7 +74,7 @@ func updateKeyval(db *gorm.DB, kv *osmodel.Keyval) error {
 	return nil
 }
 
-func deleteKeyval(db *gorm.DB, kv *osmodel.Keyval) error {
+func DeleteKeyval(db *gorm.DB, kv *osmodel.Keyval) error {
 	result := db.Delete(kv)
 	if result.Error != nil {
 		return result.Error
@@ -72,8 +82,17 @@ func deleteKeyval(db *gorm.DB, kv *osmodel.Keyval) error {
 	return nil
 }
 
+func GetIKeyVals(db *gorm.DB) ([]osmodel.Keyval, error) {
+  var kvs []osmodel.Keyval
+  result := db.Find(&kvs)
+  if result.Error != nil {
+    return nil, result.Error
+  }
+  return kvs, nil
+}
+
 // Interface
-func createInterface(db *gorm.DB, iface *osmodel.Interface) error {
+func CreateInterface(db *gorm.DB, iface *osmodel.Interface) error {
 	result := db.Create(iface)
 	if result.Error != nil {
 		return result.Error
@@ -81,7 +100,7 @@ func createInterface(db *gorm.DB, iface *osmodel.Interface) error {
 	return nil
 }
 
-func getInterfaceByID(db *gorm.DB, ifaceID uint) (*osmodel.Interface, error) {
+func GetInterfaceByID(db *gorm.DB, ifaceID int) (*osmodel.Interface, error) {
 	var iface osmodel.Interface
 	result := db.First(&iface, ifaceID)
 	if result.Error != nil {
@@ -90,7 +109,7 @@ func getInterfaceByID(db *gorm.DB, ifaceID uint) (*osmodel.Interface, error) {
 	return &iface, nil
 }
 
-func updateInterface(db *gorm.DB, iface *osmodel.Interface) error {
+func UpdateInterface(db *gorm.DB, iface *osmodel.Interface) error {
 	result := db.Save(iface)
 	if result.Error != nil {
 		return result.Error
@@ -98,10 +117,19 @@ func updateInterface(db *gorm.DB, iface *osmodel.Interface) error {
 	return nil
 }
 
-func deleteInterface(db *gorm.DB, iface *osmodel.Interface) error {
+func DeleteInterface(db *gorm.DB, iface *osmodel.Interface) error {
 	result := db.Delete(iface)
 	if result.Error != nil {
 		return result.Error
 	}
 	return nil
+}
+
+func GetInterfaces(db *gorm.DB) ([]osmodel.Interface, error) {
+  var ifaces []osmodel.Interface
+  result := db.Find(&ifaces)
+  if result.Error != nil {
+    return nil, result.Error
+  }
+  return ifaces, nil
 }
