@@ -1,4 +1,4 @@
-package pfview
+package pfapi
 
 import (
 	"arknet/modules/common/model"

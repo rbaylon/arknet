@@ -1,4 +1,4 @@
-package osview
+package osapi
 
 import (
 	"arknet/modules/common/model"

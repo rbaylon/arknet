@@ -6,10 +6,16 @@ import (
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"os"
+  "github.com/gin-contrib/sessions"
 )
 
 type Line interface {
 	Genline() string
+}
+
+type Useraccount struct {
+  Username string `form:"username"`
+  Password string `form:"password"`
 }
 
 func GetEnvVariable(key string) string {
@@ -25,17 +31,26 @@ func BasicAuth(c *gin.Context) {
 		appuser = GetEnvVariable("APP_USER")
 		pw      = GetEnvVariable("APP_USER_PASSWORD")
 	)
-	user, password, hasAuth := c.Request.BasicAuth()
-	if hasAuth && user == appuser && password == pw {
-		log.WithFields(log.Fields{
-			"user": user,
-		}).Info("User authenticated")
-	} else {
-		c.Abort()
-		c.Writer.Header().Set("WWW-Authenticate", "Basic realm=Restricted")
-		c.JSON(http.StatusForbidden, gin.H{
-			"error": "Access denied!",
-		})
-		return
-	}
+  session := sessions.Default(c)
+  authenticated := session.Get("authenticated")
+  if authenticated != nil {
+    log.Println("Session ok for", authenticated)
+    return
+  } else {
+    log.Println("Session initiated.")
+    var u Useraccount
+    c.Bind(&u)
+    if u.Username == appuser && u.Password == pw {
+      log.WithFields(log.Fields{
+        "user": u.Username,
+      }).Info("User authenticated")
+      session.Set("authenticated", u.Username)
+      session.Save()
+      return
+    } else {
+      c.Abort()
+      c.Redirect(http.StatusTemporaryRedirect, "/login")
+      return
+    }
+  }
 }
