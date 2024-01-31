@@ -7,6 +7,7 @@ import (
   "arknet/modules/os/view"
 	"arknet/modules/pf/model"
 	"arknet/modules/pf/view"
+  "arknet/modules/pf/view/web"
 	"github.com/gin-gonic/gin"
   "arknet/view"
 	"log"
@@ -39,6 +40,7 @@ func main() {
   r.Static("/css", "./public/core/css")
   core.Setroutes(r)
 	pfapi.Setroutes(r, db)
+  pfui.Setroutes(r, db)
   osapi.Setroutes(r, db)
 	r.Run(gin_ip + ":" + gin_port)
 }

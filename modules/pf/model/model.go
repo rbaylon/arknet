@@ -8,15 +8,15 @@ import (
 
 type Pfrulebasic struct {
 	ID          uint   `json:"id" gorm:"primary_key"`
-	Action      string `json:"action"`
-	Direction   string `json:"direction"`
-	Interface   string `json:"interface"`
-	Addrfamily  string `json:"addrfamily"`
-	Protocol    string `json:"protocol"`
-	Source      string `json:"source"`
-	Destination string `json:"destination"`
-	Dstport     string `json:"dstport"`
-	Custom      string `json:"custom"`
+	Action      string `json:"action" form:"action"`
+	Direction   string `json:"direction"  form:"direction"`
+	Interface   string `json:"interface" form:"interface"`
+	Addrfamily  string `json:"addrfamily" form:"addrfamily"`
+	Protocol    string `json:"protocol" form:"protocol"`
+	Source      string `json:"source" form:"source"`
+	Destination string `json:"destination" form:"destination"`
+	Dstport     string `json:"dstport" form:"dstport"`
+	Custom      string `json:"custom" form:"custom"`
 }
 
 func (pfrb *Pfrulebasic) Genline() string {
@@ -31,11 +31,11 @@ func (pfrb *Pfrulebasic) Genline() string {
 
 type Pfqueue struct {
 	ID            uint   `json:"id" gorm:"primary_key"`
-	Name          string `json:"name"`
-	Onorparent    string `json:"onorparent"`
-	Parentoriface string `json:"parentoriface"`
-	Bandwidth     string `json:"bandwidth"`
-	Custom        string `json:"custom"`
+	Name          string `json:"name" form:"name"`
+	Onorparent    string `json:"onorparent" form:"onorparent"`
+	Parentoriface string `json:"parentoriface" form:"parentorinterface"`
+	Bandwidth     string `json:"bandwidth" form:"bandwidth"`
+	Custom        string `json:"custom" form:"custom"`
 }
 
 func (pfq *Pfqueue) Genline() string {

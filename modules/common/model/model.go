@@ -49,7 +49,7 @@ func BasicAuth(c *gin.Context) {
       return
     } else {
       c.Abort()
-      c.Redirect(http.StatusTemporaryRedirect, "/login")
+      c.Redirect(http.StatusTemporaryRedirect, "/401")
       return
     }
   }

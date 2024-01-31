@@ -53,6 +53,19 @@ func Login() gin.HandlerFunc {
   return gin.HandlerFunc(fn)
 }
 
+func Unauthorized() gin.HandlerFunc {
+  fn := func(c *gin.Context) {
+    c.HTML(
+      http.StatusOK,
+      "a_401.html",
+      gin.H{
+      },
+    )
+  }
+
+  return gin.HandlerFunc(fn)
+}
+
 func Logout () gin.HandlerFunc {
   fn := func(c *gin.Context) {
     session := sessions.Default(c)
@@ -73,4 +86,5 @@ func Setroutes(r *gin.Engine) {
   r.GET("/login", Login())
   r.POST("/login", Login())
   r.GET("/logout", Logout())
+  r.GET("/401", Unauthorized())
 }
