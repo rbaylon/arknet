@@ -1,0 +1,8 @@
+#!/bin/ksh
+
+print "Setting forwarding..."
+sysctl net.inet.ip.forwarding=1
+sysctl net.inet6.ip6.forwarding=1
+print "done."
+print "Listing interfaces..."
+

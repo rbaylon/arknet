@@ -1,0 +1,70 @@
+#!/bin/ksh
+
+usage(){
+  echo "Usage: $0"
+  exit 1
+}
+
+listifs(){
+  ifconfig -a | awk '/flags/ {print $1}' | egrep -v "enc0|pflog0|lo0" | sed 's/://g'
+}
+
+listIpFamily(){
+  print "IPv4"
+  print "IPv6"
+}
+
+showIfaces(){
+  ifconfig -a
+}
+
+myhome=`dirname $0`
+
+configif(){
+  default=none
+  listifs
+  read iface?"Select select which interface to configure: "
+  [[ "${iface}" = '' ]] && print "none selected. Program will exit" && exit 0
+  listifs | grep $iface | grep -v grep >/dev/null 2>&1
+  [[ $? -ne 0 ]] && print "Invalid interface $iface" && exit 2
+  listIpFamily
+  read ipversion?"Enter IP version: "
+  [[ "${ipversion}" = '' ]] && print "No input received. Program will exit" && exit 0
+  listIpFamily | grep $ipversion | grep -v grep >/dev/null 2>&1
+  [[ $? -ne 0 ]] && print "Invalid IP version $ipversion" && exit 2
+  read addr?"Enter $ipversion address for $iface: "
+  [[ "${addr}" = '' ]] && print "No input received. Program will exit" && exit 0
+  ${myhome}/validator ip $addr
+  [[ $? -ne 0 ]] && print "Invalid IP address $addr" && exit 2
+  print "IP: $addr"
+  read prefix?"Enter netmask/prefix(for IPv4 use / notation but enter the number only.): "
+  [[ "${prefix}" = '' ]] && print "No input received. Program will exit" && exit 0
+  ${myhome}/validator prefix $prefix
+  [[ $? -ne 0 ]] && print "Invalid IP prefix/netmask /${prefix}" && exit 2
+  if [[ $ipversion = "IPv4" ]];then 
+    ipversion=inet
+  else
+    ipversion=inet6
+  fi
+  print "$ipversion ${addr}/${prefix}" > /etc/hostname.$iface
+  sh /etc/netstart $iface  
+}
+
+if [[ $# -lt 1 ]] ;then
+  usage
+fi
+
+case $1 in
+  list)
+    listifs
+    ;;
+  config)
+    configif 
+    ;;
+  show)
+    showIfaces
+    ;;
+  *)
+    print "`basename $0` error: $1 - Invalid command"
+    exit 1 ;;
+esac

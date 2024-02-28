@@ -1,0 +1,48 @@
+#!/bin/ksh
+
+usage(){
+  echo "Usage: $0"
+  exit 1
+}
+
+if [[ $# -lt 1 ]] ;then
+  usage
+fi
+
+validate_ip(){
+  ip=$1
+  version=$2
+  if expr "$ip" : '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$' >/dev/null; then
+    return 0
+  else
+    return 3 
+  fi
+}
+
+validate_prefix(){
+  prefix=$1
+  version=$2
+  if [ -z "${prefix##*[!0-9]*}" ]; then
+    return 3
+  else
+    if [ $prefix -le 32 ]; then
+      return 0
+    else
+      return 3
+    fi
+  fi
+}
+
+case $1 in
+  ip)
+    validate_ip $2
+    exit $?
+    ;;
+  prefix)
+    validate_prefix $2
+    exit $?
+    ;;
+  *)
+    print "error: $1 - Invalid command"
+    exit 1 ;;
+esac
