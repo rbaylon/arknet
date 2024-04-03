@@ -3,71 +3,114 @@ package pfui
 import (
 	"arknet/modules/common/model"
 	"arknet/modules/pf/controller"
-  "arknet/modules/pf/model"
+	"arknet/modules/pf/model"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
+  "strconv"
 )
 
 func uiGetPfqueues(db *gorm.DB) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
-		res, _ := pfcontroller.GetPfqueues(db)
-    c.HTML(
-      http.StatusOK,
-      "a_plans.html",
-      gin.H{
-        "title": "Subscription Plans",
-        "plans": res,
-      },
-    )
+		res, _ := pfcontroller.GetIplans(db)
+		c.HTML(
+			http.StatusOK,
+			"a_plans.html",
+			gin.H{
+				"title": "Internet Plans",
+				"plans": res,
+			},
+		)
 
 	}
 	return gin.HandlerFunc(fn)
 }
 
 func uiCreatePfqueue(db *gorm.DB) gin.HandlerFunc {
-  fn := func(c *gin.Context) {
-    var pfq pfmodel.Pfqueue
-    if c.Request.Method == "POST" {
-      if err := c.Bind(&pfq); err != nil {
-        c.HTML(
-          http.StatusOK,
-          "a_plan.html",
-          gin.H{
-            "title": "Subscriber Plan",
-            "flash": "Input error",
-          },
-        )
-        return
-      }
-      err := pfcontroller.CreatePfqueue(db, &pfq)
+	fn := func(c *gin.Context) {
+		var iplan pfmodel.InternetPlan
+		if c.Request.Method == "POST" {
+			if err := c.Bind(&iplan); err != nil {
+				c.HTML(
+					http.StatusOK,
+					"a_plan.html",
+					gin.H{
+						"title": "Internet Plan",
+						"flash": err,
+					},
+				)
+				return
+			}
+      var err error
+      id, err := strconv.Atoi(c.Request.PostFormValue("id"))
       if err == nil {
-        c.Redirect(http.StatusMovedPermanently, "/plans")
-        return
+        iplan.ID = uint(id)
+        if c.Request.PostFormValue("delete") == "yes" {
+          err = pfcontroller.DeleteInternetPlan(db, &iplan)
+        } else {
+          err = pfcontroller.UpdateIplan(db, &iplan)
+        }
+      } else {
+			  err = pfcontroller.CreateIplan(db, &iplan)
+      }
+			if err == nil {
+				c.Redirect(http.StatusMovedPermanently, "/plans")
+				return
+			} else {
+				c.HTML(
+					http.StatusOK,
+					"a_plan.html",
+					gin.H{
+						"title": "Internet Plan",
+						"flash": err,
+					},
+				)
+				return
+			}
+		} else {
+      id, err := strconv.Atoi(c.Query("id"))
+      if err == nil {
+        iplan, err := pfcontroller.GetIplanByID(db, id)
+        if err != nil {
+          c.HTML(
+            http.StatusOK,
+            "a_plan.html",
+            gin.H{
+              "title": "Internet Plan",
+              "flash": err,
+            },
+          )
+          return
+        } else {
+          del := "no"
+          if c.Query("delete") == "yes" {
+            del = "yes"
+          }
+          c.HTML(
+            http.StatusOK,
+            "a_plan.html",
+            gin.H{
+              "title": "Internet Plan",
+              "flash": " ",
+              "data": iplan,
+              "delete": del,
+            },
+          )
+        }
       } else {
         c.HTML(
           http.StatusOK,
           "a_plan.html",
           gin.H{
-            "title": "Subscriber Plan",
-            "flash": err,
+            "title": "Internet Plan",
+            "flash": " ",
           },
         )
-        return
       }
-    } else {
-      c.HTML(
-        http.StatusOK,
-        "a_plan.html",
-        gin.H{
-          "title": "Subscriber Plan",
-          "flash": " ",
-        },
-      )
-    }
-  }
+		}
+	}
 
-  return gin.HandlerFunc(fn)
+	return gin.HandlerFunc(fn)
 }
 
 func Setroutes(r *gin.Engine, db *gorm.DB) {

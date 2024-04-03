@@ -38,6 +38,15 @@ type Pfqueue struct {
 	Custom        string `json:"custom" form:"custom"`
 }
 
+type InternetPlan struct {
+	ID       uint   `json:"id" gorm:"primary_key"`
+	Name     string `json:"name" form:"name"`
+	Download int    `json:"download" form:"download"`
+	Upload   int    `json:"upload" form:"upload"`
+	Burst    int    `json:"burst" form:"burst"`
+	Duration int    `json:"duration" form:"duration"`
+}
+
 func (pfq *Pfqueue) Genline() string {
 	if c := string(pfq.Custom[0]); c != "#" {
 		return fmt.Sprintf("queue %s %s %s bandwidth  %s %s", pfq.Name, pfq.Onorparent, pfq.Parentoriface, pfq.Bandwidth, pfq.Custom)
@@ -56,4 +65,9 @@ func MigrateDB(db *gorm.DB) {
 		log.Fatal(err)
 	}
 	log.Println("Pfqueue migrated")
+	err = db.AutoMigrate(&InternetPlan{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Internet plan migrated")
 }

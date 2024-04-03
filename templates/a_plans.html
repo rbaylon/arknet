@@ -1,14 +1,14 @@
 {{ template "a_head.html" .}}
                     <div class="container-fluid px-4">
-                        <h1 class="mt-4">Subscription Plans</h1>
+                        <h1 class="mt-4">Internet Plans</h1>
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
                             <li class="breadcrumb-item active">Plans</li>
                         </ol>
                         <div class="card mb-4">
                             <div class="card-header">
-                                <i class="fas fa-table me-1"></i>
-                                Subscription Plans
+                                Create Internet Plan
+                                <a href="/plan"><i class="fas fa-square-plus me-1"></i></a>
                             </div>
                             <div class="card-body">
                                 <table id="datatablesSimple">
@@ -16,31 +16,39 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>Name</th>
-                                            <th>On/Parent</th>
-                                            <th>Parent/Interface</th>
-                                            <th>Bandwidth</th>
-                                            <th>Custom</th>
+                                            <th>Download Speed(Mbps)</th>
+                                            <th>Upload Speed(Mbps)</th>
+                                            <th>Burst Speed(Mbps)</th>
+                                            <th>Burst Duration(Seconds)</th>
+                                            <th></th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
                                             <th>ID</th>
                                             <th>Name</th>
-                                            <th>On/Parent</th>
-                                            <th>Parent/Interface</th>
-                                            <th>Bandwidth</th>
-                                            <th>Custom</th>
+                                            <th>Download Speed(Mbps)</th>
+                                            <th>Upload Speed(Mbps)</th>
+                                            <th>Burst Speed(Mbps)</th>
+                                            <th>Burst Duration(Seconds)</th>
+                                            <th></th>
+                                            <th></th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
+                                        {{range .plans }}
                                         <tr>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
+                                            <th>{{ .ID }}</th>
+                                            <th>{{ .Name }}</th>
+                                            <th>{{ .Download }}</th>
+                                            <th>{{ .Upload }}</th>
+                                            <th>{{ .Burst }}</th>
+                                            <th>{{ .Duration }}</th>
+                                            <th><a href="/plan?id={{ .ID }}"><i class="fa-solid fa-pencil"></a></i></th>
+                                            <th><a href="/plan?id={{ .ID }}&delete=yes"><i class="fa-solid fa-square-minus"></a></i></th>
                                         </tr>
+                                        {{end}}
                                     </tbody>
                                 </table>
                             </div>

@@ -24,6 +24,15 @@ func GetPfrulebasicByID(db *gorm.DB, pfrbID int) (*pfmodel.Pfrulebasic, error) {
 	return &pfrb, nil
 }
 
+func GetIplanByID(db *gorm.DB, iplanID int) (*pfmodel.InternetPlan, error) {
+  var iplan pfmodel.InternetPlan
+  result := db.First(&iplan, iplanID)
+  if result.Error != nil {
+    return nil, result.Error
+  }
+  return &iplan, nil
+}
+
 func UpdatePfrulebasic(db *gorm.DB, pfrb *pfmodel.Pfrulebasic) error {
 	result := db.Save(pfrb)
 	if result.Error != nil {
@@ -32,12 +41,28 @@ func UpdatePfrulebasic(db *gorm.DB, pfrb *pfmodel.Pfrulebasic) error {
 	return nil
 }
 
+func UpdateIplan(db *gorm.DB, iplan *pfmodel.InternetPlan) error {
+  result := db.Save(iplan)
+  if result.Error != nil {
+    return result.Error
+  }
+  return nil
+}
+
 func DeletePfrulebasic(db *gorm.DB, pfrb *pfmodel.Pfrulebasic) error {
 	result := db.Delete(pfrb)
 	if result.Error != nil {
 		return result.Error
 	}
 	return nil
+}
+
+func DeleteInternetPlan(db *gorm.DB, iplan *pfmodel.InternetPlan) error {
+  result := db.Delete(iplan)
+  if result.Error != nil {
+    return result.Error
+  }
+  return nil
 }
 
 func GetPfrulebasics(db *gorm.DB) ([]pfmodel.Pfrulebasic, error) {
@@ -53,6 +78,14 @@ func GetPfrulebasics(db *gorm.DB) ([]pfmodel.Pfrulebasic, error) {
 
 func CreatePfqueue(db *gorm.DB, pfq *pfmodel.Pfqueue) error {
 	result := db.Create(pfq)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func CreateIplan(db *gorm.DB, iplan *pfmodel.InternetPlan) error {
+	result := db.Create(iplan)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -91,4 +124,13 @@ func GetPfqueues(db *gorm.DB) ([]pfmodel.Pfqueue, error) {
 		return nil, result.Error
 	}
 	return pfqs, nil
+}
+
+func GetIplans(db *gorm.DB) ([]pfmodel.InternetPlan, error) {
+	var iplans []pfmodel.InternetPlan
+	result := db.Find(&iplans)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return iplans, nil
 }
