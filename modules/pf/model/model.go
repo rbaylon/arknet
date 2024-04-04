@@ -47,6 +47,14 @@ type InternetPlan struct {
 	Duration int    `json:"duration" form:"duration"`
 }
 
+type TelcoConfig struct {
+  ID       uint   `json:"id" gorm:"primary_key"`
+  Iface     string `json:"iface" form:"iface"`
+  PoolAddress string `json:"pooladdress" form:"pooladdress"`
+  DnsServers string `json:"dnsserver" form:"dnsserver"`
+  IfaceIp   string `json:"ifaceip form:"ifaceip"`
+}
+
 func (pfq *Pfqueue) Genline() string {
 	if c := string(pfq.Custom[0]); c != "#" {
 		return fmt.Sprintf("queue %s %s %s bandwidth  %s %s", pfq.Name, pfq.Onorparent, pfq.Parentoriface, pfq.Bandwidth, pfq.Custom)
@@ -70,4 +78,9 @@ func MigrateDB(db *gorm.DB) {
 		log.Fatal(err)
 	}
 	log.Println("Internet plan migrated")
+  err = db.AutoMigrate(&TelcoConfig{})
+  if err != nil {
+    log.Fatal(err)
+  }
+  log.Println("TelcoConfig migrated")
 }

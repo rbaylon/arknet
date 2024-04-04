@@ -33,6 +33,15 @@ func GetIplanByID(db *gorm.DB, iplanID int) (*pfmodel.InternetPlan, error) {
   return &iplan, nil
 }
 
+func GetTelcoConfigByID(db *gorm.DB, tcID int) (*pfmodel.TelcoConfig, error) {
+  var tc pfmodel.TelcoConfig
+  result := db.First(&tc, tcID)
+  if result.Error != nil {
+    return nil, result.Error
+  }
+  return &tc, nil
+}
+
 func UpdatePfrulebasic(db *gorm.DB, pfrb *pfmodel.Pfrulebasic) error {
 	result := db.Save(pfrb)
 	if result.Error != nil {
@@ -43,6 +52,14 @@ func UpdatePfrulebasic(db *gorm.DB, pfrb *pfmodel.Pfrulebasic) error {
 
 func UpdateIplan(db *gorm.DB, iplan *pfmodel.InternetPlan) error {
   result := db.Save(iplan)
+  if result.Error != nil {
+    return result.Error
+  }
+  return nil
+}
+
+func UpdateTelcoConfig(db *gorm.DB, tc *pfmodel.TelcoConfig) error {
+  result := db.Save(tc)
   if result.Error != nil {
     return result.Error
   }
@@ -90,6 +107,14 @@ func CreateIplan(db *gorm.DB, iplan *pfmodel.InternetPlan) error {
 		return result.Error
 	}
 	return nil
+}
+
+func CreateTelcoConfig(db *gorm.DB, tc *pfmodel.TelcoConfig) error {
+  result := db.Create(tc)
+  if result.Error != nil {
+    return result.Error
+  }
+  return nil
 }
 
 func GetPfqueueByID(db *gorm.DB, pfqID int) (*pfmodel.Pfqueue, error) {
