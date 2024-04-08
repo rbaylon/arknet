@@ -41,6 +41,7 @@
                                             <div class="mt-4 mb-0">
                                                 <input type="hidden" name="id" value="{{ .data.ID }}">
                                                 <input type="hidden" name="delete" value="{{ .delete }}">
+                                                <input type="hidden" name="csrftoken" value="{{ .CsrfToken }}"/>
                                                 {{ if (eq .delete "yes") }}
                                                   <input type="submit" value="Delete" class="btn btn-primary">
                                                   <p class="text-danger">This action will delete the record permanently</p>

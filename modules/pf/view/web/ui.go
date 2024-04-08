@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 	"net/http"
   "strconv"
+  "github.com/gin-contrib/sessions"
 )
 
 func uiGetIplans(db *gorm.DB) gin.HandlerFunc {
@@ -29,14 +30,20 @@ func uiGetIplans(db *gorm.DB) gin.HandlerFunc {
 func uiCreateIplan(db *gorm.DB) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
 		var iplan pfmodel.InternetPlan
+    csrftoken, _ := common.GenCsrfToken()
+    session := sessions.Default(c)
 		if c.Request.Method == "POST" {
-			if err := c.Bind(&iplan); err != nil {
+      t, _ := session.Get("csrftoken").(string)
+			if err := c.Bind(&iplan); err != nil || common.CheckCsrfToken(t, c.Request.PostFormValue("csrftoken")) == false {
+        session.Set("csrftoken", csrftoken)
+        session.Save()
 				c.HTML(
           400,
 					"a_plan.html",
 					gin.H{
 						"title": "Internet Plan",
 						"flash": err,
+            "CsrfToken": csrftoken,
 					},
 				)
 				return
@@ -57,17 +64,22 @@ func uiCreateIplan(db *gorm.DB) gin.HandlerFunc {
 				c.Redirect(http.StatusMovedPermanently, "/plans")
 				return
 			} else {
+        session.Set("csrftoken", csrftoken)
+        session.Save()
 				c.HTML(
 					400,
 					"a_plan.html",
 					gin.H{
 						"title": "Internet Plan",
 						"flash": err,
+            "CsrfToken": csrftoken,
 					},
 				)
 				return
 			}
 		} else {
+      session.Set("csrftoken", csrftoken)
+      session.Save()
       id, err := strconv.Atoi(c.Query("id"))
       if err == nil {
         iplan, err := pfcontroller.GetIplanByID(db, id)
@@ -78,6 +90,7 @@ func uiCreateIplan(db *gorm.DB) gin.HandlerFunc {
             gin.H{
               "title": "Internet Plan",
               "flash": err,
+              "CsrfToken": csrftoken,
             },
           )
           return
@@ -94,8 +107,10 @@ func uiCreateIplan(db *gorm.DB) gin.HandlerFunc {
               "flash": " ",
               "data": iplan,
               "delete": del,
+              "CsrfToken": csrftoken,
             },
           )
+          return
         }
       } else {
         c.HTML(
@@ -104,6 +119,7 @@ func uiCreateIplan(db *gorm.DB) gin.HandlerFunc {
           gin.H{
             "title": "Internet Plan",
             "flash": " ",
+            "CsrfToken": csrftoken,
           },
         )
       }
@@ -116,14 +132,20 @@ func uiCreateIplan(db *gorm.DB) gin.HandlerFunc {
 func uiCreateTelcoConfig(db *gorm.DB) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
 		var tc pfmodel.TelcoConfig
+    csrftoken, _ := common.GenCsrfToken()
+    session := sessions.Default(c)
+    session.Set("csrftoken", csrftoken)
+    session.Save()
 		if c.Request.Method == "POST" {
-			if err := c.Bind(&tc); err != nil {
+      t, _ := session.Get("csrftoken").(string)
+			if err := c.Bind(&tc); err != nil || common.CheckCsrfToken(t, c.Request.PostFormValue("csrftoken")) == false {
 				c.HTML(
           400,
 					"a_telco.html",
 					gin.H{
 						"title": "Telco Config",
 						"flash": err,
+            "CsrfToken": csrftoken,
 					},
 				)
 				return
@@ -146,6 +168,7 @@ func uiCreateTelcoConfig(db *gorm.DB) gin.HandlerFunc {
 					gin.H{
 						"title": "Internet Plan",
 						"flash": err,
+            "CsrfToken": csrftoken,
 					},
 				)
 				return
@@ -161,6 +184,7 @@ func uiCreateTelcoConfig(db *gorm.DB) gin.HandlerFunc {
             gin.H{
               "title": "Internet Plan",
               "flash": err,
+              "CsrfToken": csrftoken,
             },
           )
           return
@@ -172,6 +196,7 @@ func uiCreateTelcoConfig(db *gorm.DB) gin.HandlerFunc {
               "title": "Internet Plan",
               "flash": " ",
               "data": tc,
+              "CsrfToken": csrftoken,
             },
           )
         }
@@ -182,6 +207,7 @@ func uiCreateTelcoConfig(db *gorm.DB) gin.HandlerFunc {
           gin.H{
             "title": "Internet Plan",
             "flash": " ",
+            "CsrfToken": csrftoken,
           },
         )
       }

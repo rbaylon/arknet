@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
   "github.com/gin-contrib/sessions"
+  "crypto/rand"
+  "fmt"
 )
 
 type Line interface {
@@ -53,4 +55,17 @@ func BasicAuth(c *gin.Context) {
       return
     }
   }
+}
+
+func GenCsrfToken() (string, error) {
+	b := make([]byte, 16)
+	_, err := rand.Read(b)
+	return fmt.Sprintf("%x", b), err
+}
+
+func CheckCsrfToken(reqtoken string, sessiontoken string) bool {
+  if reqtoken != sessiontoken {
+    return false
+  }
+  return true
 }
